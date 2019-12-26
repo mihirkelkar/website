@@ -1,7 +1,25 @@
 ---
 layout: default
 ---
+I am a software developer and a product manager with a knack for working on early stage products.
+I split my time between Los Angeles, USA and Toronto, Canada.
 
+## Work
+I'm an Engineering Leader at *Thrive Market*.
+I wear many hats. I lead a team of senior engineers to build machine
+learning automation, backend services for user personlization, big-data processing engines and
+real-time stream processing.
+
+As the first data engineer at Thrive Market, I helped design and build data-processing and reporting tools. I've launched new services, optimized mature products, developed internal tools for analytics and data access to support Thrive Market's growing marketing and merchandizing team. I helped hire and mentor over 20 contributors in the data organization at Thrive Market.
+
+
+## Interests
+I enjoy hiking, coding, craft brew and curating my Spotify playlist in my spare time.
+
+## Contact me
+Reach out to me on [LinkedIn](https://www.linkedin.com/in/mhrkelkar/). I don't bite :)
+
+<!--
 Text can be **bold**, _italic_, or ~~strikethrough~~.
 
 [Link to another page](./another-page.html).
@@ -121,3 +139,4 @@ Long, single-line code blocks should not wrap. They should horizontally scroll i
 ```
 The final element.
 ```
+-->
