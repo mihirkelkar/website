@@ -1,16 +1,15 @@
 ---
 layout: default
 ---
-I am a software developer and a product manager with a knack for working on early stage products.
-I split my time between Los Angeles, USA and Toronto, Canada.
+I am a **software developer** and a **product manager** with a knack for working on early stage products.  
+I split my time between _Los Angeles_ and _Toronto_.
 
 ## Work
-I'm an Engineering Leader at *Thrive Market*.
-I wear many hats. I lead a team of senior engineers to build machine
-learning automation, backend services for user personlization, big-data processing engines and
-real-time stream processing.
+I'm an Engineering Leader at **Thrive Market**.  
+I wear many hats. I lead a team of senior engineers to build machine learning automation, backend services for user personlization, big-data processing engines and real-time stream processing.
 
-As the first data engineer at Thrive Market, I helped design and build data-processing and reporting tools. I've launched new services, optimized mature products, developed internal tools for analytics and data access to support Thrive Market's growing marketing and merchandizing team. I helped hire and mentor over 20 contributors in the data organization at Thrive Market.
+Previously, as the first data engineer at Thrive Market, I helped design and build data-processing and reporting tools.   
+I've launched new services, optimized mature products, developed internal tools for analytics and data access to support Thrive Market's growing marketing and merchandizing team. I helped hire and mentor over 20 contributors in the data organization at Thrive Market.
 
 
 ## Interests
