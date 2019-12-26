@@ -21,7 +21,7 @@ I've launched new services, optimized mature products, developed internal tools 
 I enjoy hiking, coding, craft brew and curating my Spotify playlist in my spare time.
 
 ## Contact me
-Reach out to me on [LinkedIn](https://www.linkedin.com/in/mhrkelkar/). I don't bite :)
+Reach out to me on [LinkedIn](https://www.linkedin.com/in/mhrkelkar/) or [email me](mailto:mihir@mihirkelkar.ca). I don't bite :)
 
 <!--
 Text can be **bold**, _italic_, or ~~strikethrough~~.
