@@ -2,26 +2,20 @@
 layout: default
 ---
 
-# Instantly Converting CSV files to APIs using Golang - Part A
+# Instantly converting CSV files to an API using Golang - Part A
 
-Off recently, I have been building a lot of projects that rely on ingesting  
-a large amount of CSV data. This shouldn't be a problem per-se for any big data processing  
-framework but the data I wanted isn't available in bulk  at the same time.  
+Off recently, I have been building a lot of projects that rely on ingesting a large amount of CSV data.
+This shouldn't be a problem per-se for any big data processing framework but the data I wanted isn't available in bulk  at the same time.  
 
-This meant that the data that I am looking for often arrives as small one-off files once  
-or twice a week. Consuming this data in small quantities didn't make too much sense.  
-Often, the format of the data and the headers of the CSV files available were also different.  
-Which meant that I had to build a general purpose tool that could ingest these files  
-and make them available in a sort-of standardized format programatically.  
+This meant that the data that I am looking for often arrives as small one-off files once or twice a week. Consuming this data in small quantities didn't make too much sense. Often, the format of the data and the headers of the CSV files available were also different. This meant that I had to build a general purpose tool that could ingest these files and make them available in a sort-of standardized format programatically.  
 
-So I decided to build a tool that could read a CSV file and then make the file content
-available instantly via an API.
+So I decided to build a tool that could read a CSV file and then make the file content available instantly via an API.
 
 To do this I decided to setup a basic web-app using golang mux and a MySQL backend.  
 
-In this part, I wanted to go over building the CSV processor for the app that we  
-will eventually import as a package into the go mux web app. I posted a public version  
-of the tool [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)  
+In this part, I wanted to go over building the CSV processor for the app that we will eventually import as a package into the go mux web app.
+
+I posted a public version of the tool [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)  
 
 ## Building the CSV Processor.
 
@@ -39,14 +33,15 @@ type csvFile struct {
 }
 ```
 
-Each CSV file struct has attributes like its Headers, A unique datafilekey that I generate,  
-the number of columns, the number of rows and then the actual content of each row of this file.  
+Each CSV file struct has attributes like its
+* Headers
+* A unique datafilekey that I generate
+* the number of columns
+* the number of rows
+* the actual content of each row of this file.  
 
 
-Now let's try and read a CSV file and convert it to the struct representation above.
-We use the standard csv reader package available for golang and read the contents of the  
-file into a variable called `lines`. The csv reader's `ReadAll`function returns a `[][]string`    
-and it fits the representation of lines in the struct above well.  
+Now let's try and read a CSV file and convert it to the struct representation above. We can use the standard csv reader package available for golang and read the contents of the file into a variable called `lines`. The csv reader's `ReadAll`function returns a `[][]string` and it fits the representation of lines in the struct above well.  
 ```
 package csvprocessor
 
@@ -72,8 +67,7 @@ func NewCsvUpload(filepath string) (*csvFile, error) {
 }
 ```
 
-We however, still need to set the headers, rows and a unique data key for the file that we just read.  
-To do that, we will be defining receiver functions on the csvFile struct that we defined earlier.  
+We still need to set the headers, rows and a unique data key for the file that we read. To do that, we will be defining receiver functions on the csvFile struct.  
 
 ```
 package csvprocessor
@@ -122,12 +116,9 @@ func (csv *csvFile) SetRows() {
 }
 ```
 
-Now, that we have defined functions to set headers, rows and a unique file key. We can now  
-complete the original function `NewCsvUpload` to use the newly defined reciever functions.  
-At this point, the file `csvprocessor.go` looks like this.
+Now, that we have defined functions to set headers, rows and a unique file key. We can now complete the original function `NewCsvUpload` to use the newly defined receiver functions. For good measure, we also defined additional receiver functions that can get the return the data of the csvFile structs.   
 
-For good measure, we also defined receiver functions that can get the return the data of the
-csvFile structs.   
+At this point, the file `csvprocessor.go` looks like this:  
 
 ```
 package csvprocessor
@@ -222,8 +213,8 @@ func (csv *csvFile) GetDataFileKey() string {
 }
 ```
 `
-This file can now be used as a package to be imported into a web-app to parse csv files
-and convert them to an intermediate go struct representation.
+This file can now be used as a package to be imported into a web-app to parse csv files and convert them to an intermediate go struct representation.
 
-In part B, we will build the basics of a golang webapp where we can upload files and it  
-will process them and store them in a MySQL database.  
+In part B, we will build the basics of a golang web-app using Docker and link it to a MySQL database. We will
+setup the correct schema for this database and then work to build a function that can parse an uploaded file
+and store it in the MySQL database.
