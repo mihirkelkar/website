@@ -15,7 +15,7 @@ To do this I decided to setup a basic web-app using golang mux and a MySQL backe
 
 In this part, I wanted to go over building the CSV processor for the app that we will eventually import as a package into the go mux web app.
 
-I posted a public version of the tool [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)  
+**I posted a public version of the tool [here]**(http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
 
 ## Building the CSV Processor.
 
