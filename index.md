@@ -26,7 +26,7 @@ Reach out to me on [LinkedIn](https://www.linkedin.com/in/mhrkelkar/) or [email 
 
 
 ## Projects
-Most of the projects I work on are available on [github](github.com/mihirkelkar)
+Most of the projects I work on are available on [github](https://github.com/mihirkelkar)
 
 ### Articles
 * [Instantly Convert CSV Files to an API](./csvapione.md).
