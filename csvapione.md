@@ -4,6 +4,8 @@ layout: default
 
 # Instantly convert CSV files to an API using Golang - Part A
 
+* [Part B](./csvapitwo.html)
+
 Off recently, I have been working on a lot of projects that rely on ingesting large amounts of CSV data.
 This shouldn't be a problem for any big data processing framework per-se but the data I want isn't available in bulk at the same time. This means that the data arrives as small one-off files once or twice a week. Consuming this data in small quantities doesn't make much sense since I need large datasets for finding patterns. Often, the format of the data and the headers of the CSV files were also different. This meant that I had to build a general purpose tool that could ingest these files on-demand and make them available in some sort-of standardized format programatically.  
 

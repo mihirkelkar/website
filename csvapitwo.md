@@ -4,9 +4,9 @@ layout: default
 
 # Instantly convert CSV files to an API using Golang - Part B
 
-[Part A](./csvapione.html)
+* [Part A](./csvapione.html)
 
-All the code for part-B is available [here] (https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
+All the code for part-B is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
 
 In part A, we built an importable package that could parse CSV files and convert them to an intermediate struct representation. In this part we are going to setup a basic Golang web-app using mux and then link it to a MySQL database. The web-app will eventually be able to upload csv files, parse them and store the contents into the database. To do local development, we will be using docker.
 
@@ -299,4 +299,4 @@ With this, we have so far :
 
 In the next part, we will write the handler functions required to parse an uploaded file and store it in the databases as well as the API handlers required for returning the data.
 
-All the code for part-B is available [here] (https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
+All the code for part-B is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
