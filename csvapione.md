@@ -13,7 +13,7 @@ So I decided to build a tool that could read a CSV file and then make the file c
 
 In this part, I wanted to go over building the CSV processor for the app that we will eventually be imported as a package into the go mux web app.
 
-**I posted a public version of the tool [here]**(http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
+**I posted a public version of the tool [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)**
 
 ## Building the CSV Processor.
 

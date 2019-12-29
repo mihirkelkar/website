@@ -26,7 +26,7 @@ go mod init github.com/<user-name>/<dir-path>
 
 Once you execute this command, you should have a `go.mod` file present in the directory. If you type in the command `go mod verify`, it should print a message like `all modules verified`.
 
-Now, lets go ahead and create a basic directory structure for our go web-app. Create a folder called `cmd` in the root folder. Within the `cmd` folder create a folder called `web` In `web` lets create a file called `main.go`.
+Now, lets go ahead and create a basic directory structure for our go web-app. Create a folder called `cmd` in the root folder. Within the `cmd` folder create a folder called `web`. In `web` lets create a file called `main.go`.
 
 Your directory structure should look like this :
 ```
