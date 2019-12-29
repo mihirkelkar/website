@@ -4,6 +4,7 @@ layout: default
 
 # Instantly convert CSV files to an API using Golang - Part A
 
+* A full demo of this tool with a UI is available [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
 * [Part B](./csvapitwo.html)
 
 Off recently, I have been working on a lot of projects that rely on ingesting large amounts of CSV data.
@@ -13,7 +14,6 @@ So I decided to build a tool that could read a CSV file and then make the file c
 
 In this part, I wanted to go over building the CSV processor for the app that we will eventually be imported as a package into the go mux web app.
 
-**I posted a public version of the tool [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)**
 
 ## Building the CSV Processor.
 
