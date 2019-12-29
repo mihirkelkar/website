@@ -4,7 +4,7 @@ layout: default
 
 # Instantly convert CSV files to an API using Golang - Part B
 
-* * A full demo of this tool with a UI is available [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
+* A full demo of this tool with a UI is available [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
 * [Part A](./csvapione.html)
 
 All the code for part-B is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
