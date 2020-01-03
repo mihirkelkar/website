@@ -285,7 +285,6 @@ create table uid_datacontent(
     value varchar(1000),
     primary key(datafileid, headerid, rowid)
     );
-);
 ```
 
 We need to log into the MySQL database and create these tables. Make sure that your app and database are still running, then type in `docker ps` into a new terminal and find the container id associated with the `mysql 5.7` docker image. Lets log into this image by typing `docker exec -it <container-id> /bin/bash`
