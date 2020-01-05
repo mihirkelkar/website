@@ -7,6 +7,7 @@ layout: default
 * A full demo of this tool with a UI is available [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
 * [Part A](./csvapione.html)
 * [Part B](./csvapitwo.html)
+* [Part D](./csvapifour.html)
 
 In part A, we built the package to parse a csv file. In part B: we setup the database and a golang web-app that can be used to parse and store these files. In this part, we will develop an API end-point that can upload a file, parse it and store it in the database.
 
@@ -72,7 +73,8 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	return
 }
 ```
-The function is very rudimentary in nature. At its core, the function retrieves the file from the request, then it writes the file to a folder on the web-server. Once, a copy of the file is written to the web-server it return a 200 status code. If there is an error along the way it should return a 500 and print an error message on the terminal. In production ready systems, we would typically write the error to an errorLog. However, we can make those changes at the end of the application for now.
+
+The function is very rudimentary in nature. At its core, the function retrieves the file from the request, then it writes the file to a folder on the web-server. Once, a copy of the file is written to the web-server it return a 200 status code. If there is an error along the way it should return a 500 and prints an error message on the terminal. In production ready systems, we would typically write the error to an errorLog. However, we can make those changes at the end of the application for now.
 
 The entire `cmd/web/main.go` file should look like
 ```
@@ -549,9 +551,9 @@ func (app *Application) UploadFile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
+	datakey := csvFile.GetDataFileKey()
 	//Insert the metadata into the database.
-	lastID, err := app.ModelService.InsertMetaData(csvFile.GetDataFileKey())
+	lastID, err := app.ModelService.InsertMetaData(datakey)
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -582,6 +584,7 @@ func (app *Application) UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 	os.Remove("./data/" + filename)
 	w.WriteHeader(http.StatusOK)
+	fmt.Println(datakey)
 	return
 }
 
@@ -619,6 +622,6 @@ func main() {
 }
 ```
 
-Let's re-compile and test this application and test it out. If you get a 200 Status code on your Curl request. You successfully uploaded, parsed and stored a csv file in a database.
+Let's re-compile and test this application and test it out. If you get a 200 Status code on your Curl request. You successfully uploaded, parsed and stored a csv file in a database. Note that the file ID gets printed out on the terminal after a successful upload.
 
-In part D, we will build the API handlers that will return this stored data for us. The entire codebase until this point is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-c)
+In part D, we will build the API end points and handlers that will return this stored data for us. The entire codebase until this point is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-c)

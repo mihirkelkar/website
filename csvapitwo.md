@@ -7,12 +7,13 @@ layout: default
 * A full demo of this tool with a UI is available [here](http://web-app.326wy59fvd.us-east-1.elasticbeanstalk.com/)
 * [Part A](./csvapione.html)
 * [Part C](./csvapithree.html)
+* [Part D](./csvapifour.html)
 
 All the code for part-B is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
 
 In part A, we built an importable package that could parse CSV files and convert them to an intermediate struct representation. In this part we are going to setup a basic Golang web-app using mux and then link it to a MySQL database. The web-app will eventually be able to upload csv files, parse them and store the contents into the database. To do local development, we will be using docker.
 
-For now, lets start with creating the basic structure of our golang web-app. Lets create a new directory and change direcotry into the new directory.
+For now, lets start with creating the basic structure of our golang web-app. Lets create a new directory and `cd` into the new directory.
 
 ```
 mkdir csvapi && cd "$_"
@@ -23,7 +24,7 @@ This newly created directory will be the root of our golang web-app. Instead of 
 To initialize a go module, we need a unique path name. I use the format `github.com/<user-name>/<dir-path>`
 
 ```
-go mod init github.com/<user-name>/<dir-path>
+go mod init github.com/<user-name>/csvapi
 ```
 
 Once you execute this command, you should have a `go.mod` file present in the directory. If you type in the command `go mod verify`, it should print a message like `all modules verified`.
