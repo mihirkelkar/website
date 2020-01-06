@@ -14,12 +14,12 @@ This shouldn't be a problem for any big data processing framework per-se but the
 
 So I decided to build a tool that could read a CSV file and then make the file content available instantly via an API. To do this I decided to setup a basic web-app using golang mux and a MySQL backend.  
 
-In this part, I wanted to go over building the CSV processor for the app that we will eventually be imported as a package into the go mux web app.
+In this part, I wanted to go over building the CSV processor for the app that we will eventually be imported as a package into the go mux app.
 
 
 ## Building the CSV Processor.
 
-Since I needed a way to distinguish individual files, I decided to represent each CSV file as structure.
+Since I needed a way to distinguish individual files, I decided to represent each CSV file as a golang struct.
 
 ```
 package csvprocessor
@@ -224,3 +224,5 @@ This file can now be used as a package and imported into a web-app to parse csv 
 In part B, we will build the basics of a golang web-app using Docker and link it to a MySQL database. We will
 setup the correct schema for this database and then work to build a function that can parse an uploaded file
 and store it in the MySQL database.
+
+[Part B](./csvapitwo.html)

@@ -625,3 +625,6 @@ func main() {
 Let's re-compile and test this application and test it out. If you get a 200 Status code on your Curl request. You successfully uploaded, parsed and stored a csv file in a database. Note that the file ID gets printed out on the terminal after a successful upload.
 
 In part D, we will build the API end points and handlers that will return this stored data for us. The entire codebase until this point is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-c)
+
+
+[Part D](./csvapifour.html)

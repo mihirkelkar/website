@@ -302,3 +302,5 @@ With this, we have so far :
 In the next part, we will write the handler functions required to parse an uploaded file and store it in the databases as well as the API handlers required for returning the data.
 
 All the code for part-B is available [here](https://github.com/mihirkelkar/csvapi-article/tree/master/code-part-b)  
+
+[Part C](./csvapithree.html)
