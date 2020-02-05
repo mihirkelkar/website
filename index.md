@@ -30,6 +30,7 @@ Most of the projects I work on are available on [github](https://github.com/mihi
 
 ### Articles
 * [Instantly Convert CSV Files to an API](./csvapione.md).
+* [Building an Autocomplete API with ElasticSearch](./esautocomplete.md)
 
 <!--
 Text can be **bold**, _italic_, or ~~strikethrough~~.
