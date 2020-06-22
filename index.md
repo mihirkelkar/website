@@ -5,13 +5,15 @@ I am a **software developer** and a **data product manager** with a knack for wo
 I split my time between _Los Angeles_ and _Toronto_.
 
 ## Work
-I'm an Engineering Leader at **Thrive Market**.  
+I'm an **Engineering Leader** at **Thrive Market**.  
 I wear many hats. I lead a team of senior engineers to build solutions for
  * Machine learning automation
  * Big-data processing engines
- * Backend services for user personlization
+ * Backend services for user personalization
  * Product search and filtering algorithms
  * Real-time stream processing
+
+ I am also the **product manager** for Thrive Market's _Search_ and _User Personalization_ experiences.
 
 Previously, as the first data engineer at Thrive Market, I helped design and build data-processing and reporting tools.
 
