@@ -112,14 +112,12 @@ As far as the ES cluster goes, scaling an elastic search cluster has 3 main comp
 1. Size of each index.
 Every index is divided into shards. Each shard is assigned to a node. Each node has multiple replicas. So your ES index shards are distributed across several nodes. When a new search is received its transformed into a set of searches (one on each shard). Each shard returns the document that match the search query and then the lists are merged and sorted. The number of documents on a shard gives us an idea of how long a search on a shard takes. The number of shards on a node can give us an estimate on the memory required. So faster response time can possibly be achieved by splitting up your index into several smaller shards but you are trading that off with search concurrency. Several smaller shards would just mean more shards on the node and wouldn't mean less documents in total on the same node.
 
-<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png"/>
+<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png" width="500" height="600">
 
 
-2. Throughput
-One of the aims of scaling is to be able to manage several search requests at the same time without significant degradation in response time. In Elastic Search, a search request can be received by any node. That node then co-ordinates the search on shards in other nodes. Searches are performed by threads on a node, so the number of concurrent searches are generally controlled by the number of threads you have running on a node. The number of available threads on a node is controlled by the `thread_pool.search` setting on the cluster. Increasing the number of threads can help with search concurrency.
+2. Throughput : One of the aims of scaling is to be able to manage several search requests at the same time without significant degradation in response time. In Elastic Search, a search request can be received by any node. That node then co-ordinates the search on shards in other nodes. Searches are performed by threads on a node, so the number of concurrent searches are generally controlled by the number of threads you have running on a node. The number of available threads on a node is controlled by the `thread_pool.search` setting on the cluster. Increasing the number of threads can help with search concurrency.
 
-3. Size of the cluster
-Simple increasing the number of nodes can help speed up performance for sure provided there are enough shards to be assigned to every node.
+3. Size of the cluster : Simple increasing the number of nodes can help speed up performance for sure provided there are enough shards to be assigned to every node.
 
 In general, there isn't a silver bullet for this. This is more like turning 4 knobs that you control:
 - shard size        : This affects the time to perform search on that shard. The smaller the shard the faster the search.
