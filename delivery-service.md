@@ -94,8 +94,6 @@ I tried to group the data access patterns together logically in a way where we m
 - GET information of all restaurants around a location. These get arranged into several carousels
 - GET search results for restaurants around a location.
 
-<image here>
-<image here>
 
 The information that gets shown here is highly contextual. Its based on the user's delivery location.  Different users at the same location appear to get a different ordering of the same base set of restaurants, so there is likely some personalization logic in the background, but I am going to leave that out of the mix for now. If we switch over to a different delivery address in a different city, the screen loads for a bit and displays a different set of restaurants into the grid arranged as carousels. My estimate is that some backend logic is taking the user's delivery location as one of the primary inputs and its mapping it to a set of restaurants.
 
@@ -104,7 +102,7 @@ Given that the set of restaurants changes even if you move the delivery address 
 Given the facts and assumptions we have, I would guess that this experience is likely being powered by elastic search cluster(s) as the primary database. Its likely that each major metropolitan has its own index and each restaurant is represented as a document. The document likely has
 several fields that can provide the information that needs to be displayed on the home page and for the restaurants to be grouped together into grids and carousels. Its likely that they might simply store lat / longitude information as fields in the document as well. A lot of this information on the screen doesn't change pretty often, its likely that partial updates happen on the indexes every so often to display changes in location, active status or change in names. I would guess that this ES cluster stores no data on the menu items of the restaurants itself or if it does, there are separate indexes for those.
 
-<architecture diagram here>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/IyrLR6j" data-context="false" ><a href="//imgur.com/a/IyrLR6j"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 ## Scaling the API web service
 When a request to display information on the homepage is received, the API web service likely augments it with additional preference metadata and runs a ES query to find restaurants within a radius of the requested location. The response to the query is likely post-processed and arranged in a way that it can be easily rendered on the device screen. Because of the way this information is processed, it could be pretty easy to keep this API server stateless. If it does need to get user preference information, it could possibly query another micro-service like a blackbox. This would allow for an API web service architecture that can scale horizontally with demand. As the number of concurrent requests come in, we could simply increase the number of API services to scale with the demand. There isn't much rocket science to this.
@@ -114,8 +112,7 @@ As far as the ES cluster goes, scaling an elastic search cluster has 3 main comp
 1. Size of each index.
 Every index is divided into shards. Each shard is assigned to a node. Each node has multiple replicas. So your ES index shards are distributed across several nodes. When a new search is received its transformed into a set of searches (one on each shard). Each shard returns the document that match the search query and then the lists are merged and sorted. The number of documents on a shard gives us an idea of how long a search on a shard takes. The number of shards on a node can give us an estimate on the memory required. So faster response time can possibly be achieved by splitting up your index into several smaller shards but you are trading that off with search concurrency. Several smaller shards would just mean more shards on the node and wouldn't mean less documents in total on the same node.
 
-<image here>
-https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png
+<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png"></img>
 
 
 2. Throughput
