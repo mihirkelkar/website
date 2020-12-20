@@ -112,7 +112,7 @@ As far as the ES cluster goes, scaling an elastic search cluster has 3 main comp
 1. Size of each index.
 Every index is divided into shards. Each shard is assigned to a node. Each node has multiple replicas. So your ES index shards are distributed across several nodes. When a new search is received its transformed into a set of searches (one on each shard). Each shard returns the document that match the search query and then the lists are merged and sorted. The number of documents on a shard gives us an idea of how long a search on a shard takes. The number of shards on a node can give us an estimate on the memory required. So faster response time can possibly be achieved by splitting up your index into several smaller shards but you are trading that off with search concurrency. Several smaller shards would just mean more shards on the node and wouldn't mean less documents in total on the same node.
 
-<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png"></img>
+<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png"/>
 
 
 2. Throughput
