@@ -46,23 +46,31 @@ cannot connect to its API server and that the information I am viewing might hav
 
 Using any of the quick filters leaves the grid un-responsive. Which means that the app most likely relies on an API call to do the filtering
 on the grid. However, now the app clearly says that there is a connectivity issue.
-<image here>
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/mUIfFFQ" data-context="false" ><a href="//imgur.com/a/mUIfFFQ"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
 
 Using any of the quick cuisine preferences also leaves the grid un-response. This is very likely an API call to filter the grid as well.
-<image here>
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/rqJWlqW" data-context="false" ><a href="//imgur.com/a/rqJWlqW"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 I can understand the need for an extra API call to do filtering. There might be some metadata that is needed to filter that isn't available when the grid loads and needs to be fetched only when we try to filter. A possible optimization here could be :
+
 1. Look for the most regularly used filters and cuisine selectors and cache the information you might need to filter it.
+
 As an example, I tend to order Indian food quite a bit, it might make sense to cache a cuisine related attributes when the restaurant grid data is cached on my device. That way, it would at-least allow the cuisine filters to work. There is a fine balance to be struck here since
 we don't want to cache everything. We can be smart and personalize caching in this situation. This would protect the perception of functionality in some cases. At the very least it still allows the user to browse somewhat if there's an outage.
 
 On a similar note, attributes that are used to filter by ratings, dash-pass, $$ can also potentially be cached depending on a user's preference. These values don't tend to change very frequently and its okay for them to be eventually consistent. This would allow the experience to be somewhat seamless even during downtime.
 
 An odd thing I noted was that if I moved over to the pickup tab, it shows me "pickup" eligible restaurants on a map but somehow isn't able to filter the grid using the "pickup" quick select option.  ¯\_(ツ)_/¯
-<image here>
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/LPzLAp4" data-context="false" ><a href="//imgur.com/a/LPzLAp4"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 On certain occasions, loading the offers page without an internet connection throws this error:
-<image here>
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/NRiaqS1" data-context="false" ><a href="//imgur.com/a/NRiaqS1"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
 There is definitely room for a more graceful failure here.
 
 
