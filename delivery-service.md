@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Designing a resilient delivery system
+# Reverse Engineering Doordash
 
 Last mile delivery services like UberEats, Doordash and SkipTheDishes have become a staple of our new normal. Technology like this would seem almost magical a few decades ago: where pressing a button on a handheld piece of glass summons a stranger with your order at your doorstep. Despite how magical this technology is, it sure comes with its annoyances. More often than not, I have noticed that components of the delivery system seem to break down with little to no recourse or graceful failures. Some of the recent annoyances / failures have been :
 
