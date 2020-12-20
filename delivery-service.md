@@ -112,7 +112,7 @@ As far as the ES cluster goes, scaling an elastic search cluster has 3 main comp
 1. Size of each index.
 Every index is divided into shards. Each shard is assigned to a node. Each node has multiple replicas. So your ES index shards are distributed across several nodes. When a new search is received its transformed into a set of searches (one on each shard). Each shard returns the document that match the search query and then the lists are merged and sorted. The number of documents on a shard gives us an idea of how long a search on a shard takes. The number of shards on a node can give us an estimate on the memory required. So faster response time can possibly be achieved by splitting up your index into several smaller shards but you are trading that off with search concurrency. Several smaller shards would just mean more shards on the node and wouldn't mean less documents in total on the same node.
 
-<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png" width="500" height="600">
+<img src="https://miro.medium.com/max/1400/1*U39NfbVwkht1kLex8scVIw.png" width="600" height="600">
 
 
 2. Throughput : One of the aims of scaling is to be able to manage several search requests at the same time without significant degradation in response time. In Elastic Search, a search request can be received by any node. That node then co-ordinates the search on shards in other nodes. Searches are performed by threads on a node, so the number of concurrent searches are generally controlled by the number of threads you have running on a node. The number of available threads on a node is controlled by the `thread_pool.search` setting on the cluster. Increasing the number of threads can help with search concurrency.
@@ -126,3 +126,13 @@ In general, there isn't a silver bullet for this. This is more like turning 4 kn
 - cluster size      : more nodes can help with throughput. However this depends on the number of documents being handled by each node.
 
 A good idea when high throughput is required, is to consider increasing the threads on each node, adding nodes and then increasing the replica factor so that each node at-least has one shard per available thread.
+
+With these improvements and using other strategies like leveraging a CDN, we can probably ensure that the homepage carousels and the search function will work well and scale well with traffic. Using other caching strategies, graceful failures and device specific caching we can make this experience pretty seamless.
+
+A similar kind of solution can be achieved for the following access patterns as well:
+- GET information of a particular restaurant, its menu items, its prices, its reviews etc. [This powers the menu page]
+- GET detailed information of a restaurant's menu items.
+
+Elastic Search is probably not the best fit for this kind of information since its super tightly coupled to the restaurant and probably doesn't need to be searched. On most occasions, it needs to be arranged for fast bulk retrieval. If speed is what you are optimizing for, it could even make sense to store this data as Key Value Pairs on a redis. However for all intents and purposes a well optimized relational database will fit the bill. This data however might need more frequent updates especially if a restaurant changes its menu or marks things as sold out.It might make sense to arrange the relational databases in a master -  clone configuration where writes are performed on the master and the cloning database has indexes optimized for high read throughout for our data access patterns.
+
+<img src="https://www.red-gate.com/simple-talk/wp-content/uploads/2019/04/a-screenshot-of-a-cell-phone-description-automati-1.png">
