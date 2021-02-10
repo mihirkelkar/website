@@ -22,19 +22,19 @@ Impacts your cluster's ability to handle multiple requests at the same time
 
 Before we dive into what we can do to scale well, let's develop some baseline understanding of how elastic search works. Elastic-search stores your data in an index; an index can be thought of as a collection of documents. Each document is a collection of fields, which are the key-value pairs that contain your data. A document can represent a customer or a product, and its fields can be the attributes associated with your customer/product.
 
-<img src="https://www.notion.so/Scaling-Elastic-Search-4310059d61e34646897912ad67525c57#00d34274b76e49e6987c06031f80906d" width="600" height="600">
+<img src="https://imgur.com/a/iAr1RZa" width="600" height="600">
 
 An index is divided into multiple shards. Each shard contains a subset of documents from the index. An index's shards are distributed across several nodes of the elastic search cluster. This way, each node only contains a part of an index. Each shard can also have replicas (as decided by the replication factor setting). A shard's replicas are distributed across the cluster's nodes. All of this helps protect your data against node failures and allows for concurrent data access.
 
-<img src="https://www.notion.so/Scaling-Elastic-Search-4310059d61e34646897912ad67525c57#a597500982e544099a5f2df603d26c41">
+<img src="https://imgur.com/MJJHgGn" width="600" height="600">
 
 ***What happens when you run an elastic search query?***
 
 A query can be received by any node in the elastic search cluster. The node that receives that request becomes the coordinator node. The coordinator determines a target index and then performs the search on its shards and asks the other nodes to search on their respective shards for the target index. Each shard returns its matching documents to the coordinator node, where the list is merged, sorted, or ranked and returned as a query response.
 
-<img src="https://www.notion.so/Scaling-Elastic-Search-4310059d61e34646897912ad67525c57#a2fd987c634b4d9c85254c90a18e1af4">
+<img src="https://imgur.com/IWnYZg9" width="600" height="600">
 
-<img src="https://www.notion.so/Scaling-Elastic-Search-4310059d61e34646897912ad67525c57#237f1b0db58543be87d2131fe8021635">
+<img src="https://imgur.com/Zpb3Z3E" width="600" height="600">
 
 **Improving Query Speed and throughput**
 
@@ -58,7 +58,8 @@ If a subset of your index's documents is being queried most of the time, it migh
 
 For example, if your search index contains data on books and a majority of your users are searching based on the categories of these books, it might make sense to have an index per category. This will mean that queries can be directed to specific indexes, and a smaller set of documents will be searched.
 
-<img src="https://www.notion.so/Scaling-Elastic-Search-4310059d61e34646897912ad67525c57#92caaa6978124ea381d5e2e7dbf1e674">
+
+<img src="https://imgur.com/viZISg0" width="600" height="600">
 
 ***Use filtering over scoring***
 
