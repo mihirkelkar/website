@@ -6,6 +6,8 @@ layout: default
 
 ### Lessons from building a high throughput and fast elastic search cluster
 
+![ScreenShot](https://raw.githubusercontent.com/i-saumitra/Voice-controlled-MP3-Player/master/screenshot.jpg)
+
 Elastic search is a powerful *out-of-the-box* search product. It's built to scale horizontally, so adding more nodes to the cluster lets it handle more data without performance degradation. Despite the simplistic sounding approach, scaling a cluster under real production loads is a complicated problem that needs to be tailored to your specific use case.
 
 In fast-growing businesses, elastic search clusters need significant fine-tuning to keep up with growth in data size, traffic volume, and changes in data access patterns. Simply adding nodes without understanding your data access patterns can blow up your cloud computing bills and customer experience.
@@ -58,7 +60,7 @@ If a subset of your index's documents is being queried most of the time, it migh
 
 For example, if your search index contains data on books and a majority of your users are searching based on the categories of these books, it might make sense to have an index per category. This will mean that queries can be directed to specific indexes, and a smaller set of documents will be searched.
 
-![ScreenShot](https://raw.githubusercontent.com/i-saumitra/Voice-controlled-MP3-Player/master/screenshot.jpg)
+
 <img src="https://imgur.com/viZISg0">
 
 ***Use filtering over scoring***
