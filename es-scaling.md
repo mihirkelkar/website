@@ -6,7 +6,7 @@ layout: default
 
 ### Lessons from building a high throughput and fast elastic search cluster
 
-![ScreenShot](https://raw.githubusercontent.com/i-saumitra/Voice-controlled-MP3-Player/master/screenshot.jpg)
+
 
 Elastic search is a powerful *out-of-the-box* search product. It's built to scale horizontally, so adding more nodes to the cluster lets it handle more data without performance degradation. Despite the simplistic sounding approach, scaling a cluster under real production loads is a complicated problem that needs to be tailored to your specific use case.
 
@@ -24,7 +24,7 @@ Impacts your cluster's ability to handle multiple requests at the same time
 
 Before we dive into what we can do to scale well, let's develop some baseline understanding of how elastic search works. Elastic-search stores your data in an index; an index can be thought of as a collection of documents. Each document is a collection of fields, which are the key-value pairs that contain your data. A document can represent a customer or a product, and its fields can be the attributes associated with your customer/product.
 
-<img src="https://imgur.com/a/iAr1RZa" width="600" height="600">
+![ScreenShot](/assets/one.png)
 
 An index is divided into multiple shards. Each shard contains a subset of documents from the index. An index's shards are distributed across several nodes of the elastic search cluster. This way, each node only contains a part of an index. Each shard can also have replicas (as decided by the replication factor setting). A shard's replicas are distributed across the cluster's nodes. All of this helps protect your data against node failures and allows for concurrent data access.
 
