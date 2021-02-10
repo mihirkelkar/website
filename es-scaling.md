@@ -58,7 +58,7 @@ If a subset of your index's documents is being queried most of the time, it migh
 
 For example, if your search index contains data on books and a majority of your users are searching based on the categories of these books, it might make sense to have an index per category. This will mean that queries can be directed to specific indexes, and a smaller set of documents will be searched.
 
-
+![ScreenShot](https://raw.githubusercontent.com/i-saumitra/Voice-controlled-MP3-Player/master/screenshot.jpg)
 <img src="https://imgur.com/viZISg0">
 
 ***Use filtering over scoring***
