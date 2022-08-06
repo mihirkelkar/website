@@ -1,24 +1,30 @@
 ---
 layout: default
 ---
-I am a **software developer** and a **data product manager** with a knack for working on early stage products.  
+I am an **engineering leader**, **software developer** and **data product manager** with a knack for working on early stage products.  
 I split my time between _Los Angeles_ and _Toronto_.
 
 ## Work
-I'm an **Engineering Leader** at **Thrive Market**.  
+I'm an **Engineering Leader** at **Homebase** in service of the best damn data team in the world.   
+
 I wear many hats. I lead a team of senior engineers to build solutions for
  * Machine learning automation
  * Big-data processing engines
- * Backend services for user personalization
- * Product search and filtering algorithms
+ * Backend services for personalization
+ * machine learned algorithms and rules-based engines.
  * Real-time stream processing
 
- I am also the **product manager** for **Search** and **User Personalization** experiences
- on Thrive Market's website and mobile apps.
+I've launched new services, optimized mature products, developed internal tools to support growth, marketing and sales teams. I specialize in bootstrapping and scaling a data practice and love working on early stage products. 
 
-Previously, as the first data engineer at Thrive Market, I helped design and build data-processing and reporting tools.
 
-I've launched new services, optimized mature products, developed internal tools for analytics and data access to support Thrive Market's growing marketing and merchandizing team. I helped hire and mentor over 20 contributors in the data organization at Thrive Market.
+Before **Homebase**, I spent 4 years building amazing data products at **Thrive Market**
+
+As the first big-data engineer at Thrive Market, I helped design and build data-processing and reporting tools.
+
+I also acted as the **product manager** for **Search** and **User Personalization** experiences
+on Thrive Market's website and mobile apps.
+
+
 
 ## Interests
 I enjoy hiking, coding, craft brew and curating my Spotify playlist in my spare time.
