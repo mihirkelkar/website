@@ -3,18 +3,20 @@ layout: default
 ---
 I am a product and engineering leader, operator, and investor in early-stage technology companies. I have launched new products, optimized mature offerings, and built and scaled teams. As part of the leadership team at Pequity (acquired by ADP in Oct 2025); I oversee product, technology, and go-to-market for the company’s flagship compensation and hiring products.
 
-I’m motivated by meaningful work done alongside people who care deeply about their craft and about creating delightful experiences. One of my core aspirations is to give more than I take, something I continue to work towards.
+I’m motivated by meaningful work done alongside people who care deeply about their craft and about creating delightful experiences. One of my core aspirations is to give more than I take, something I continue to work towards. I believe in a strong bias to action. 
 
 ## Work
 * Pequity (Acquired by ADP - Oct 2025) - Head of Data/Poduct
   - GM for Pequity's flagship compensation and hiring products.
   - Head of Data
-* Homebase
+* Homebase - Senior Engineering Manager
   - Led and grew data engineering, data science and analytics teams through series B/C/D
-  - Partnered with economist Jason Greenberg to produce a jobs report based on proprietary SMB data (~$0.5M ARR)
+  - Partnered with economist Jason Greenberg to develop a jobs-report product using proprietary Homebase SMB data (~$0.5M ARR).
 * Thrive Market
   - Eng Leader, Product manager for Personalization
-  - Started off as the first data engineer and personally built the first version of search & recommenders on Thrive's website
+  - Personally developed the first version of search & recommenders on Thrive's website
+* Tradesy (Acquired by Versataire Collective)
+  - In 2016, I was part of a 12-person team building the future of the circular economy by selling second-hand designer handbags.
 
 ### Writing
 I read a great deal and write frequently about what I’ve learned, exploring topics ranging from technology and the impacts of a changing climate to economics and the intersections among them.
