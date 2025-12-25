@@ -1,43 +1,23 @@
 ---
 layout: default
 ---
-I am an **engineering leader**, **software developer** and **data product manager** with a knack for working on early stage products.  
-I split my time between _Los Angeles_ and _Toronto_.
+I am a product and engineering leader, operator, and investor in early-stage technology companies. I have launched new products, optimized mature offerings, and built and scaled teams. As part of the leadership team at Pequity (acquired by ADP in Oct 2025); I oversee product, technology, and go-to-market for the company’s flagship compensation and hiring products.
+
+I’m motivated by meaningful work done alongside people who care deeply about their craft and about creating delightful experiences. One of my core aspirations is to give more than I take, something I continue to work towards.
 
 ## Work
-I'm an **Engineering Leader** at **Homebase** in service of the best damn data team in the world.   
+* Pequity (Acquired by ADP - Oct 2025) - Head of Data/Poduct
+  - GM for Pequity's flagship compensation and hiring products.
+  - Head of Data
+* Homebase
+  - Led and grew data engineering, data science and analytics teams through series B/C/D
+  - Partnered with economist Jason Greenberg to produce a jobs report based on proprietary SMB data (~$0.5M ARR)
+* Thrive Market
+  - Eng Leader, Product manager for Personalization
+  - Started off as the first data engineer and personally built the first version of search & recommenders on Thrive's website
 
-I wear many hats. I lead a team of senior engineers to build solutions for
- * Machine learning automation
- * Big-data processing engines
- * Backend services for personalization
- * machine learned algorithms and rules-based engines.
- * Real-time stream processing
-
-I've launched new services, optimized mature products, developed internal tools to support growth, marketing and sales teams. I specialize in bootstrapping and scaling a data practice and love working on early stage products. 
-
-
-Before **Homebase**, I spent 4 years building amazing data products at **Thrive Market**
-
-As the first big-data engineer at Thrive Market, I helped design and build data-processing and reporting tools.
-
-I also acted as the **product manager** for **Search** and **User Personalization** experiences
-on Thrive Market's website and mobile apps.
-
-
-
-## Interests
-I enjoy hiking, coding, craft brew and curating my Spotify playlist in my spare time.
-
-
-## Contact me
-Reach out to me on [LinkedIn](https://www.linkedin.com/in/mhrkelkar/) or [email me](mailto:mihir@mihirkelkar.ca). I don't bite :)
-
-
-## Projects
-Most of the projects I work on are available on [github](https://github.com/mihirkelkar)
-
-### Articles
+### Writing
+I read a great deal and write frequently about what I’ve learned, exploring topics ranging from technology and the impacts of a changing climate to economics and the intersections among them.
 * [Instantly Convert CSV Files to an API](./csvapione.md).
 * [Building an Autocomplete API with ElasticSearch](./esautocomplete.md)
 
