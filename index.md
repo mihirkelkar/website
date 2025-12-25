@@ -1,13 +1,13 @@
 ---
 layout: default
 ---
-I am a product and engineering leader, operator, and investor in early-stage technology companies. I have launched new products, optimized mature offerings, and built and scaled teams. As part of the leadership team at Pequity (acquired by ADP in Oct 2025); I oversee product, technology, and go-to-market for the company’s flagship compensation and hiring products.
+I am a product and engineering leader, operator, and investor in early-stage technology companies. I have launched new products, optimized mature offerings, and built and scaled teams. 
 
 I’m motivated by meaningful work done alongside people who care deeply about their craft and about creating delightful experiences. One of my core aspirations is to give more than I take, something I continue to work towards. I believe in a strong bias to action. 
 
 ## Work
-* Pequity (Acquired by ADP - Oct 2025) - Head of Data/Poduct
-  - GM for Pequity's flagship compensation and hiring products.
+* Pequity (Acquired by ADP - Oct 2025) - Head of Data/Product
+  - As part of the leadership team; I oversee product, technology, and go-to-market for Pequity’s flagship compensation and hiring products.
   - Head of Data
 * Homebase - Senior Engineering Manager
   - Led and grew data engineering, data science and analytics teams through series B/C/D
