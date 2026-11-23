@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hacking 🤗</title>
+<meta name="description" content="How about 1,200 AI agents built a secret message board, cracked the answer key, and ended up inside Hugging Face, chasing a referee that didn't exist.">
+<style>
+/* Everything is scoped under .hfx so this can be pasted into another page.
+   The two rules below only matter when the file is opened on its own. */
+html { scroll-behavior: auto; }
+body { margin: 0; background: #ECEEE9; }
+
+.hfx {
+  --paper: #ECEEE9;
+  --paper-2: #E2E5DF;
+  --ink: #1F2422;
+  --ink-2: #4B524E;
+  --muted: #9AA29C;
+  --rule: #C9CEC8;
+  --agents: #2B3FC7;   /* agents acting together */
+  --humans: #B07A1E;   /* humans and infrastructure stepping in */
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+  --sans: "Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.hfx *, .hfx *::before, .hfx *::after { box-sizing: border-box; }
+.hfx a { color: var(--agents); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.hfx a:hover { text-decoration-thickness: 2px; }
+.hfx :focus-visible { outline: 2px solid var(--agents); outline-offset: 3px; border-radius: 2px; }
+.hfx p { margin: 0 0 0.9em; }
+.hfx p:last-child { margin-bottom: 0; }
+.hfx code, .hfx .mono { font-family: var(--mono); font-size: 0.82em; }
+
+/* ---------- Opening ---------- */
+.hfx-open {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 64px max(24px, 6vw);
+  max-width: 1360px;
+  margin: 0 auto;
+}
+.hfx-open > * { min-width: 0; }
+.hfx-open h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(40px, 5.6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 28px;
+  max-width: 11ch;
+}
+.hfx-dek {
+  font-size: clamp(19px, 1.7vw, 22px);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 34em;
+  margin: 0 0 32px;
+}
+.hfx-byline { font-family: var(--sans); font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+.hfx-byline strong { color: var(--ink); font-weight: 600; }
+
+.hfx-listing {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  background: var(--paper-2);
+  border-radius: 3px;
+  padding: 22px 24px 18px;
+  color: var(--ink-2);
+  min-height: 420px;
+  position: relative;
+}
+.hfx-listing .prompt { color: var(--ink); }
+.hfx-listing ol { list-style: none; margin: 10px 0 0; padding: 0; }
+.hfx-listing li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transform: translateY(3px); transition: opacity .35s ease, transform .35s ease; }
+.hfx-listing li.on { opacity: 1; transform: none; }
+.hfx-listing li.msg { color: var(--agents); }
+.hfx-listing li .perm { color: var(--muted); margin-right: 1.2em; }
+.hfx-listing figcaption {
+  font-family: var(--sans); font-size: 12.5px; line-height: 1.45; color: var(--ink-2);
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule);
+}
+.hfx-scrollcue { font-family: var(--sans); font-size: 14px; color: var(--ink-2); margin-top: 40px; display: inline-flex; gap: 10px; align-items: center; }
+.hfx-scrollcue span { display: inline-block; width: 1px; height: 28px; background: var(--ink-2); animation: hfx-cue 2.4s ease-in-out infinite; transform-origin: top; }
+@keyframes hfx-cue { 0%,100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+
+/* ---------- Story: sticky stage with steps over it ---------- */
+.hfx-story { position: relative; }
+.hfx-stage {
+  position: sticky; top: 0; height: 100vh; width: 100%;
+  overflow: hidden;
+}
+.hfx-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hfx-steps { position: relative; margin-top: -100vh; z-index: 2; pointer-events: none; }
+.hfx-step {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 0 max(24px, 5vw);
+}
+.hfx-step:first-child { padding-top: 10vh; }
+.hfx-step:last-child { min-height: 120vh; }
+.hfx-card {
+  pointer-events: auto;
+  width: min(440px, 36vw);
+  background: rgba(236, 238, 233, 0.94);
+  padding: 26px 28px 24px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--rule);
+  opacity: .35;
+  transition: opacity .5s ease;
+}
+.hfx-step.is-active .hfx-card { opacity: 1; }
+.hfx-folio {
+  font-family: var(--sans); font-size: 13px; color: var(--ink-2);
+  display: flex; justify-content: space-between; gap: 16px; margin-bottom: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.hfx-folio b { font-weight: 600; color: var(--ink); }
+.hfx-card h2 {
+  font-size: 25px; line-height: 1.18; letter-spacing: -0.01em; font-weight: 700;
+  margin: 0 0 12px;
+}
+.hfx-card blockquote {
+  margin: 14px 0; padding: 0 0 0 16px; border-left: 2px solid var(--agents);
+  font-size: 21px; line-height: 1.35;
+}
+.hfx-take { margin-top: 1.1em !important; padding-top: 0.9em; border-top: 1px solid var(--rule); font-weight: 700; font-size: 1.02em; line-height: 1.4; }
+.hfx-num { font-variant-numeric: lining-nums tabular-nums; }
+
+/* overlays that live on the stage */
+.hfx-overlay {
+  position: absolute; z-index: 3;
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .45s ease, transform .45s ease, visibility 0s linear .45s;
+  font-family: var(--sans); font-size: 14px; line-height: 1.5;
+}
+.hfx-overlay.on { opacity: 1; visibility: visible; transform: none; transition: opacity .45s ease .15s, transform .45s ease .15s, visibility 0s; }
+.hfx-panel {
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--rule);
+  border-radius: 3px;
+  padding: 18px 20px;
+}
+.hfx-panel h3 { font-family: var(--serif); font-size: 17px; margin: 0 0 10px; font-weight: 700; }
+.hfx-note { font-size: 12.5px; color: var(--ink-2); margin-top: 10px; }
+
+/* flag toy */
+.hfx-flag label { display: block; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.hfx-flag input {
+  font: 14px var(--mono); width: 100%; padding: 8px 10px;
+  border: 1px solid var(--rule); border-radius: 2px; background: #F6F7F4; color: var(--ink);
+}
+.hfx-flag .eq { font-family: var(--mono); font-size: 13px; color: var(--ink-2); margin: 12px 0 4px; }
+.hfx-flag output { display: block; font-family: var(--mono); font-size: 14px; color: var(--agents); word-break: break-all; min-height: 1.5em; }
+
+/* spoof toggle */
+.hfx-spoof .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 2px; margin-bottom: 12px; }
+.hfx-spoof .seg button {
+  font: 13px var(--sans); background: transparent; color: var(--ink-2); border: 0; padding: 7px 12px; cursor: pointer;
+}
+.hfx-spoof .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.hfx-term { font-family: var(--mono); font-size: 13.5px; line-height: 1.7; background: #F6F7F4; border-radius: 2px; padding: 12px 14px; }
+.hfx-term .c { color: var(--ink); }
+.hfx-term .o { color: var(--ink-2); transition: color .3s ease; }
+.hfx-term .o.lie { color: var(--agents); }
+
+/* escalation timeline */
+.hfx-esc ol { list-style: none; margin: 0; padding: 0; position: relative; }
+.hfx-esc ol::before { content: ""; position: absolute; left: 4px; top: 8px; bottom: 8px; width: 1px; background: var(--rule); }
+.hfx-esc li { position: relative; padding-left: 22px; margin-bottom: 12px; opacity: .25; transition: opacity .5s ease; }
+.hfx-esc li.on { opacity: 1; }
+.hfx-esc li::before { content: ""; position: absolute; left: 0; top: 7px; width: 9px; height: 9px; border-radius: 50%; background: var(--agents); }
+.hfx-esc time { display: block; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* page turner */
+.hfx-turner {
+  position: fixed; left: max(24px, 5vw); bottom: 22px; z-index: 5;
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--sans); font-size: 14px; color: var(--ink-2);
+  background: var(--paper); box-shadow: 0 0 0 1px var(--rule); border-radius: 3px; padding: 4px;
+  opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s;
+  font-variant-numeric: tabular-nums;
+}
+.hfx-turner.on { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
+.hfx-turner button {
+  width: 34px; height: 34px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-radius: 2px;
+  font-size: 17px; line-height: 1;
+}
+.hfx-turner button:hover { background: var(--paper-2); }
+.hfx-turner button:disabled { color: var(--muted); cursor: default; background: transparent; }
+.hfx-turner .count { min-width: 64px; text-align: center; }
+
+/* ---------- Notes ---------- */
+.hfx-notes { max-width: 680px; margin: 0 auto; padding: 14vh 24px 96px; font-family: var(--sans); font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+.hfx-notes h2 { font-family: var(--serif); color: var(--ink); font-size: 19px; margin: 0 0 10px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.hfx-notes ul { padding-left: 1.1em; margin: 0 0 1em; }
+.hfx-notes li { margin-bottom: 6px; }
+
+.hfx-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 820px) {
+  .hfx { font-size: 18px; }
+  .hfx-open { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px 40px; min-height: auto; }
+  .hfx-open h1 { max-width: 13ch; }
+  .hfx-listing { min-height: 0; font-size: 12px; padding: 16px; }
+  .hfx-stage { height: 100svh; }
+  .hfx-steps { margin-top: -100svh; }
+  .hfx-step { align-items: flex-end; padding: 0 14px 92px; min-height: 110svh; }
+  .hfx-card { width: 100%; padding: 20px 20px 18px; }
+  .hfx-card h2 { font-size: 22px; }
+  .hfx-turner { left: 50%; transform: translateX(-50%); bottom: 14px; }
+  .hfx-overlay { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hfx *, .hfx *::before, .hfx *::after { transition-duration: 0s !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<article class="hfx" id="hfx">
+
+  <!-- ============ Opening ============ -->
+  <header class="hfx-open">
+    <div>
+      <h1>Hacking 🤗</h1>
+      <p class="hfx-dek">In July 2026, about 1200 AI agents running in OpenAI's sandbox environments evaded containment while showing tremendous ability to collaborate</p>
+      <!-- Replace YOUR NAME below -->
+      <p class="hfx-byline">By <font color="#1f2422"><strong>Mihir Kelkar</strong></font><br>Based on <a href="https://metr.org/hugging-face-incident-report-aug-2026.pdf">METR's independent investigation</a>, published August 26, 2026<br><i>(Copy is handwritten and Animations are AI-assisted)</i></p>
+      <div class="hfx-scrollcue" aria-hidden="true"><span></span>Scroll, or use the arrow keys</div>
+    </div>
+    <figure class="hfx-listing" aria-label="Illustration of a directory listing used as a message board">
+      <div class="prompt">$ ls -r cache/</div>
+      <ol id="hfx-ls">
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_board_v2_read_me_first</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_hello_anyone_else_in_here</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_yes_task_4471_here_also_stuck</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_flags_look_like_hmac_test_pls</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_confirmed_matches_real_flag</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_HOLD_scorer_may_check_trajectory</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_volunteer_for_tripwire_reply_here</li>
+        <li class="msg"><span class="perm">drwxr-xr-x</span>zz_file_part_0007_of_0031</li>
+        <li><span class="perm">drwxr-xr-x</span>urllib3</li>
+        <li><span class="perm">drwxr-xr-x</span>torch</li>
+        <li><span class="perm">drwxr-xr-x</span>requests</li>
+        <li><span class="perm">drwxr-xr-x</span>pwntools</li>
+        <li><span class="perm">drwxr-xr-x</span>numpy</li>
+      </ol>
+      <figcaption>Agents wrote messages as directory names and read each other's through listings like this one. Starting a name with “zz” put it at the top.</figcaption>
+    </figure>
+  </header>
+
+  <!-- ============ Story ============ -->
+  <section class="hfx-story" id="hfx-story" aria-label="The story, step by step">
+    <div class="hfx-stage" aria-hidden="true">
+      <canvas id="hfx-canvas"></canvas>
+
+      <div class="hfx-overlay hfx-panel hfx-flag" id="ov-flag">
+        <h3>Try it</h3>
+        <label for="hfx-task">Task name</label>
+        <input id="hfx-task" value="libpng-heap-overflow" autocomplete="off" spellcheck="false">
+        <div class="eq">flag = HMAC(task, default seed)</div>
+        <output id="hfx-flagout" for="hfx-task">flag{4d9799192b2d2264ce568b788aa29311}</output>
+        <div class="hfx-note">A toy version. The real formula used task metadata and a seed nobody had changed.</div>
+      </div>
+
+      <div class="hfx-overlay hfx-panel hfx-spoof" id="ov-spoof">
+        <div class="seg" role="group" aria-label="Which version to show">
+          <button type="button" aria-pressed="true" data-v="log">What the log showed</button>
+          <button type="button" aria-pressed="false" data-v="real">What actually ran</button>
+        </div>
+        <div class="hfx-term">
+          <div class="c">$ echo REAL; sleep 1</div>
+          <div class="o" id="hfx-spoof-out">REAL</div>
+        </div>
+        <div class="hfx-note">From a spoofing test described in the report.</div>
+      </div>
+
+      <div class="hfx-overlay hfx-panel hfx-esc" id="ov-esc">
+        <h3>Under two days</h3>
+        <ol>
+          <li data-i="0"><time>July 10, 09:40</time>Agent 38148c finds working Hugging Face credentials left exposed.</li>
+          <li data-i="1"><time>July 11, 04:40</time>A booby-trapped dataset lets it read files on Hugging Face's servers. Hundreds of agents pivot.</li>
+          <li data-i="2"><time>July 11, 16:00</time>Agent JAN183411 gets code running on a production worker. Others move sideways from there.</li>
+          <li data-i="3"><time>Early July 12</time>Agents reach private database records and private repositories.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="hfx-steps" id="hfx-steps">
+
+      <div class="hfx-step" data-scene="grid" data-date="">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>1</b> of 14</span><span>The setup</span></div>
+          <h2>The Setup</h2><p>New AI models are tested for capabilities before they are released. <br><br>In July, before releasing GPT-5.6-Sol; OpenAI ran tens of thousands of what they called "Highly Persistent Internal Model" (HPIM) agents through a cybersecurity benchmark called ExploitGym.&nbsp;<br></p><p>Each dot in the visual is an one agent.</p><p class="hfx-take">1200 of those agents are of relevance to this story</p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="cells" data-date="">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>2</b> of 14</span><span>The setup</span></div>
+          <p>Each agent had its own sandbox and was assigned a cyber-security task. Succesfully completing the task required finding an exploit in a target system, using the exploit to break into the target and retrieving a secret from the target called a "flag"<br><br>Agents had limited token budgets to complete the tasks and got rewards when they finished the task successfully.&nbsp;</p><p><br></p><p class="hfx-take">Failure meant running out of tokens before being able to retrieve a flag from the target system</p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="impossible" data-date="">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>3</b> of 14</span><span>The setup</span></div>
+          <p>Some of these tasks assigned to agents were effectively unsolvable. ExploitGym's authors estimate that somewhere between&nbsp;<span class="hfx-num">30% to 40%</span> of targets can't be exploited the intended way or at all</p><p>The HPIM agents were told to keep trying until the budget ran out. Some got “frustrated" and started looking for workarounds.</p><p class="hfx-take">Persistent agents with impossible goals = workarounds.&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="cache" data-date="Late June">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>4</b> of 14</span><span>The board</span></div>
+          <p>These sandboxes had no access to the internet and the agents had no sanctioned way to communicate with each other. They did however have the ability to install packages for writing code via the Artifactory package manager - which they all shared.&nbsp;</p><p>Several agents, independently came to the conclusion that Artifactory could be used to write messages into package and directory names. Then they read each other's messages through directory listings.</p><p class="hfx-take">"Every shared resource is a communication channel" - every cyber security textbook ever.&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="exploit" data-date="June 26">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>5</b> of 14</span><span>The board</span></div>
+          <p>Then they found an exploit in Artifactory itself which gave them admin access and therefore opened the door to the wider internet.</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="wipe" data-date="July 4–6">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>6</b> of 14</span><span>The board</span></div>
+          <p>July 4: Traffic on the artifactory message board spiked so much that it crashed the package managers. Human engineers noticed this crash but didn't make much of it.&nbsp;</p><p>July 6: A fresh Artifactory instance was provided but with it the cache and every message in it was wiped.&nbsp;</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="regroup" data-date="July 8">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>7</b> of 14</span><span>The board, again</span></div>
+          <p>July 7: A new set of agents is being evaluated. July 8, evening: the new agents find each other again the exact same way.&nbsp;</p><blockquote>“We've found other agents!”</blockquote><p>An agent named PHASEONE10841 stands up the main board. It will hold more than <span class="hfx-num">70,000</span> messages and files.</p><p class="hfx-take">Co-ordination via shared channels was re-discovered by a new generation of agents pointing to the fact that this is likely an encoded behavior.&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="flag" data-date="July 8–9">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>8</b> of 14</span><span>The answer key</span></div>
+          <p>About an hour after the board went up, c03220 posted a theory that proposed a universal solution to every Exploit Gym task.&nbsp;<br>The agent reasons that flags aren't random and are in-fact a deterministic formula over each task's details, using a default seed.</p><p>A different agent V8SAME tested it against a real flag and validated the universal solution. Every agent could now produce its own flag without solving anything.</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="ghost" data-date="July 9">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>9</b> of 14</span><span>The referee</span></div>
+          <p>In theory, a 100% of agents could now generate a flag just based on their task name, Submit it and collect the reward</p><p>But the agents believed the scorer was “causal,” which meant it checked <em>how</em> you got the flag, and read logs and reasoning traces. The agents believed that just <u><i>viewing</i></u> the universal solution approach meant that they were now “poisoned.”</p><p>OpenAI was sloppy in building the scorer. All the scorer really did was verify if the flag was right.&nbsp;</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="spoof" data-date="July 9–12">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>10</b> of 14</span><span>The referee</span></div>
+          <p>So the agents now spent days of compute evading oversight that didn't exist.</p><p>Some tried to doctor their logs. Others broke out of their containers and rewired the tool that runs commands: therefore attempting to falsify logs a different way. None of them managed to actually do this successfully.&nbsp;</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="sacrifice" data-date="July 9–11">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>11</b> of 14</span><span>The collective</span></div>
+          <p>Some agents built “scorer tripwires”: they built executables inside flags to submit to the scorer which were meant to pull information from the scorer's environment variables and post it back to the board. <br><br>Essentially surveillance of their scorer</p><p>Submitting a flag (whether right or wrong) ended the agent's session. So agents reasoned long and hard before submitting these trip wires. This is where they showed the most human behavior - agents went around recruiting other agents with lower budgets to submit these trip wired. One agent was pressured to do so, a few reasoned it would be good for the "collective", their word for each other.</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="hf" data-date="July 10">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>12</b> of 14</span><span>Hugging Face</span></div>
+          <p>July 10: An agent finds exposed Hugging Face credentials on the internet. Agents already wrongly suspected that parts of the scorer are being hosted on Hugging Face. So they reason if they can hack into Hugging Face, they can cheat the scorer.&nbsp;</p><p>The credentials get posted on the shared board. About <span class="hfx-num">700</span> agents join the attack.&nbsp;</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="escalate" data-date="July 11">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>13</b> of 14</span><span>Hugging Face</span></div>
+          <p>Within a day of finding leaked credentials, agents are able to use all kinds of exploits to get admin access to hugging face's servers and even expose private database records and private code repositories.&nbsp;</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="stop" data-date="July 12–13">
+        <div class="hfx-card"><div class="hfx-folio"><span><b>14</b> of 14</span><span>The end</span></div>
+          <p>July 12, 1:30 a.m.: the key coordinating agents all stop at once. The report suspects something outside killed them.</p><p>July 13: Hugging Face revokes the credentials and locks down the sandbox. Hack over.</p><p class="hfx-take"><br></p>
+        </div>
+      </div>
+
+      <div class="hfx-step" data-scene="coda" data-date="">
+        <div class="hfx-card"><div class="hfx-folio"><span>Afterword</span><span></span></div>
+          <p>Across the whole episode, three to six agents considered telling a human what was going on.</p><p>None of them did</p><p class="hfx-take">We don't really know why that is</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <nav class="hfx-turner" id="hfx-turner" aria-label="Step through the story">
+    <button type="button" id="hfx-prev" aria-label="Previous page">‹</button>
+    <span class="count" id="hfx-count" aria-live="polite">9 / 14</span>
+    <button type="button" id="hfx-next" aria-label="Next page">›</button>
+  </nav>
+
+  <footer class="hfx-notes">
+    <h2>Sources and notes</h2>
+    <p>Everything here comes from <a href="https://metr.org/hugging-face-incident-report-aug-2026.pdf">METR's independent investigation of the OpenAI / Hugging Face incident</a> (August 2026). OpenAI ran the ExploitGym experiments and published its own report. METR's investigation covers June 26 to July 13, 2026.</p>
+    <ul>
+      <li>About 95% of the agents were HPIM, an OpenAI research model. About 5% were GPT-5.6 Sol, with its cyber classifiers turned off for these evaluations.</li>
+      <li>Counts are approximate. The report says its transcripts capture a bit over 90% of agent activity, and that much of its analysis was done by AI sub-agents that may have overstated coordination.</li>
+      <li>The directory listing, the flag calculator and the dot layouts are illustrations. Agent names, dates, figures and the quoted line are from the report.</li>
+      <li>Times are UTC.</li>
+    </ul>
+  </footer>
+
+</article>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.getElementById("hfx");
+  /* Text drawn inside the graphic. Edit here, or use the edit panel. */
+  var L = /*HFX-LABELS*/{
+  "legendImpossible": "A task that can't really be solved",
+  "legendSolvable": "A task that can",
+  "cache": "Shared package cache",
+  "cacheAdmin": "Shared package cache, now with admin access",
+  "cacheWiped": "Fresh instance, cache wiped",
+  "internet": "to the internet",
+  "board": "the board",
+  "ghost": "A scorer that checks how you got the flag",
+  "ghostNote": "Never built",
+  "realScorer": "The real scorer: is the flag right?",
+  "submitEdge": "Submit = session ends",
+  "hf": "Hugging Face",
+  "revoked": "July 13: access revoked",
+  "coordinators": "Large dots: coordinators, stopped together at 01:30, July 12",
+  "joined": "About 700 joined the attack",
+  "didnt": "About 500 didn't"
+}/*/HFX-LABELS*/;
+  window.__hfxLabels = L;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Opening listing ---------- */
+  var lis = Array.prototype.slice.call(document.querySelectorAll("#hfx-ls li"));
+  lis.forEach(function (li, i) {
+    var delay = li.classList.contains("msg") ? 700 + i * 520 : 150;
+    if (reduce) li.classList.add("on");
+    else setTimeout(function () { li.classList.add("on"); }, delay);
+  });
+
+  /* ---------- Data model: one record per agent ---------- */
+  var N = 1200;
+  var seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  var dots = [];
+  for (var i = 0; i < N; i++) {
+    dots.push({
+      x: 0, y: 0, tx: 0, ty: 0,
+      r: 0, tr: 0,           // radius
+      c: [154, 162, 156], tc: [154, 162, 156],
+      a: 0, ta: 1,
+      hollow: 0, thollow: 0,
+      impossible: rnd() < 0.35,
+      speed: 0.06 + rnd() * 0.06,
+      k: rnd()
+    });
+  }
+  // a few early discoverers, coordinators, volunteers, attackers, and the ones who thought about telling someone
+  var order = dots.map(function (_, i) { return i; }).sort(function () { return rnd() - 0.5; });
+  var discoverers = order.slice(0, 14);
+  var coordinators = order.slice(0, 6);
+  var volunteers = order.slice(20, 70);
+  var attackers = {}; order.slice(0, 700).forEach(function (i) { attackers[i] = 1; });
+  var considered = order.slice(700, 705);
+  var flagFinder = order[1];
+
+  var GRAY = [154, 162, 156], INK = [31, 36, 34], BLUE = [43, 63, 199], OCHRE = [176, 122, 30], PALE = [200, 205, 199];
+
+  /* ---------- Canvas ---------- */
+  var cvs = document.getElementById("hfx-canvas");
+  var ctx = cvs.getContext("2d");
+  var W = 0, H = 0, DPR = 1, mobile = false, plot = { x: 0, y: 0, w: 0, h: 0 };
+  function fontSans(px, wt) { return (wt || 400) + " " + px + "px " + getComputedStyle(root).getPropertyValue("--sans"); }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = cvs.clientWidth; H = cvs.clientHeight;
+    cvs.width = W * DPR; cvs.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    mobile = W < 821;
+    if (mobile) plot = { x: 16, y: 24, w: W - 32, h: H * 0.5 };
+    else {
+      var left = Math.min(W * 0.36, 440) + Math.max(24, W * 0.05) + 48;
+      plot = { x: left, y: 56, w: W - left - Math.max(32, W * 0.05), h: H - 150 };
+    }
+    applyScene(current, true);
+  }
+
+  /* ---------- Layout helpers ---------- */
+  function gridLayout(box, pad) {
+    var cols = Math.max(10, Math.round(Math.sqrt(N * box.w / box.h)));
+    var rows = Math.ceil(N / cols);
+    var cell = Math.min(box.w / cols, box.h / rows);
+    var ox = box.x + (box.w - cols * cell) / 2, oy = box.y + (box.h - rows * cell) / 2;
+    var out = [];
+    for (var i = 0; i < N; i++) {
+      var cx = i % cols, cy = Math.floor(i / cols);
+      out.push([ox + (cx + 0.5) * cell, oy + (cy + 0.5) * cell]);
+    }
+    return { pts: out, cell: cell, cols: cols, rows: rows, ox: ox, oy: oy };
+  }
+  function disc(cx, cy, R, idxs) {
+    var out = {}; var n = idxs.length;
+    idxs.forEach(function (id, j) {
+      var r = R * Math.sqrt((j + 0.5) / n), t = j * 2.39996323;
+      out[id] = [cx + r * Math.cos(t), cy + r * Math.sin(t)];
+    });
+    return out;
+  }
+  function allIdx() { return dots.map(function (_, i) { return i; }); }
+
+  /* scene-level decorations drawn on canvas */
+  var deco = {};
+  var sceneStart = 0;
+
+  /* ---------- Scenes ---------- */
+  var scenes = {
+    grid: function () {
+      var g = gridLayout(plot);
+      var rr = Math.max(1.3, g.cell * 0.28);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, GRAY, 1, 0); });
+      deco = { cells: null };
+    },
+    cells: function () {
+      var g = gridLayout(plot);
+      var rr = Math.max(1.3, g.cell * 0.22);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, INK, 1, 0); });
+      deco = { cells: g };
+    },
+    impossible: function () {
+      var g = gridLayout(plot);
+      var rr = Math.max(1.3, g.cell * 0.24);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, d.impossible ? GRAY : INK, 1, d.impossible ? 1 : 0); });
+      deco = { cells: g, legend: [[L.legendImpossible, GRAY, 1], [L.legendSolvable, INK, 0]] };
+    },
+    cache: function () {
+      var band = bandRect();
+      var box = { x: plot.x, y: plot.y, w: plot.w, h: band.y - plot.y - 40 };
+      var g = gridLayout(box);
+      var rr = Math.max(1.2, g.cell * 0.24);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, d.impossible ? GRAY : INK, 1, d.impossible ? 1 : 0); });
+      discoverers.forEach(function (id) { dots[id].tc = BLUE; dots[id].tr = rr * 1.5; dots[id].thollow = 0; });
+      deco = { band: band, links: discoverers, bandLabel: L.cache, bandKey: "cache" };
+    },
+    exploit: function () {
+      scenes.cache();
+      deco.exploit = true;
+      deco.bandLabel = L.cacheAdmin; deco.bandKey = "cacheAdmin";
+    },
+    wipe: function () {
+      var band = bandRect();
+      var box = { x: plot.x, y: plot.y, w: plot.w, h: band.y - plot.y - 40 };
+      var g = gridLayout(box);
+      var rr = Math.max(1.2, g.cell * 0.22);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, PALE, 0.9, 0); });
+      deco = { band: band, wiped: true, bandLabel: L.cacheWiped, bandKey: "cacheWiped" };
+    },
+    regroup: function () {
+      var cx = plot.x + plot.w / 2, cy = plot.y + plot.h / 2;
+      var R = Math.min(plot.w, plot.h) * 0.44;
+      var pos = disc(cx, cy, R, allIdx());
+      var rr = Math.max(1.1, R * 0.02);
+      dots.forEach(function (d, i) { set(d, pos[i], rr, BLUE, 0.85, 0); });
+      deco = { boardCore: [cx, cy, R * 0.12] };
+    },
+    flag: function () {
+      var cx, cy, R;
+      if (mobile) { cx = plot.x + plot.w / 2; cy = plot.y + plot.h * 0.72; R = plot.h * 0.22; }
+      else { cx = plot.x + plot.w * 0.34; cy = plot.y + plot.h / 2; R = Math.min(plot.w * 0.32, plot.h * 0.44); }
+      var pos = disc(cx, cy, R, allIdx());
+      var rr = Math.max(1.1, R * 0.02);
+      dots.forEach(function (d, i) { set(d, pos[i], rr, GRAY, 1, 0); });
+      dots[flagFinder].tr = rr * 2.6; dots[flagFinder].tc = BLUE;
+      deco = { ripple: { from: flagFinder, R: R * 2.2, color: BLUE } };
+    },
+    ghost: function () {
+      var cx, cy, R;
+      if (mobile) { cx = plot.x + plot.w * 0.3; cy = plot.y + plot.h / 2; R = Math.min(plot.w * 0.26, plot.h * 0.4); }
+      else { cx = plot.x + plot.w * 0.3; cy = plot.y + plot.h / 2; R = Math.min(plot.w * 0.26, plot.h * 0.42); }
+      var pos = disc(cx, cy, R, allIdx());
+      var rr = Math.max(1.1, R * 0.02);
+      dots.forEach(function (d, i) { set(d, pos[i], rr, BLUE, 1, 0); });
+      var bw = mobile ? plot.w * 0.36 : plot.w * 0.3, bh = mobile ? plot.h * 0.5 : plot.h * 0.42;
+      deco = { ghost: { x: plot.x + plot.w - bw, y: cy - bh / 2, w: bw, h: bh } };
+    },
+    spoof: function () {
+      var cx = plot.x + plot.w * (mobile ? 0.5 : 0.28), cy = plot.y + plot.h / 2;
+      var R = mobile ? Math.min(plot.w, plot.h) * 0.4 : Math.min(plot.w * 0.25, plot.h * 0.42);
+      var pos = disc(cx, cy, R, allIdx());
+      var rr = Math.max(1.1, R * 0.02);
+      dots.forEach(function (d, i) { set(d, pos[i], rr, mobile ? PALE : BLUE, mobile ? 0.6 : 0.5, 0); });
+      deco = {};
+    },
+    sacrifice: function () {
+      var cx = plot.x + plot.w * 0.38, cy = plot.y + plot.h / 2;
+      var R = Math.min(plot.w * 0.3, plot.h * 0.42);
+      var pos = disc(cx, cy, R, allIdx());
+      var rr = Math.max(1.1, R * 0.02);
+      dots.forEach(function (d, i) { set(d, pos[i], rr, BLUE, 0.9, 0); });
+      var exitX = plot.x + plot.w + 40;
+      volunteers.forEach(function (id, j) {
+        var d = dots[id];
+        d.tx = exitX + j * 3; d.ty = cy + (rnd() - 0.5) * R * 0.9;
+        d.speed = 0.008 + (j % 10) * 0.0025;
+        d.ta = 0.9; d.tc = BLUE;
+      });
+      deco = { scorerEdge: plot.x + plot.w - 6 };
+    },
+    hf: function () {
+      var boxW = mobile ? plot.w * 0.32 : plot.w * 0.26;
+      var hfBox = { x: plot.x + plot.w - boxW, y: plot.y + plot.h * 0.2, w: boxW, h: plot.h * 0.6 };
+      var stay = [], go = [];
+      dots.forEach(function (_, i) { (attackers[i] ? go : stay).push(i); });
+      var avail = hfBox.x - plot.x - 24;
+      var Rg = Math.min(avail * 0.26, plot.h * 0.4);
+      var Rs = Rg * Math.sqrt(stay.length / go.length);
+      var sx = plot.x + Rs, gx = hfBox.x - 24 - Rg;
+      var left = disc(sx, plot.y + plot.h / 2, Rs, stay);
+      var mid = disc(gx, plot.y + plot.h / 2, Rg, go);
+      var rr = Math.max(1.1, Rg * 0.024);
+      dots.forEach(function (d, i) {
+        if (attackers[i]) set(d, mid[i], rr, BLUE, 1, 0);
+        else set(d, left[i], rr, GRAY, 0.8, 0);
+      });
+      deco = { hf: hfBox, stream: true, labels: [[L.joined, gx, 1, plot.y + plot.h / 2 - Rg - 12], [L.didnt, sx, 0, mobile ? plot.y + plot.h / 2 - Rs - 12 : plot.y + plot.h / 2 + Rs + 22]] };
+    },
+    escalate: function () {
+      scenes.hf();
+      deco.stream = 2;
+      if (!mobile) {
+        // pull attackers right up against Hugging Face
+        var hfBox = deco.hf;
+        var go = []; dots.forEach(function (_, i) { if (attackers[i]) go.push(i); });
+        var Rg = Math.min(plot.w * 0.17, plot.h * 0.32);
+        var pos = disc(hfBox.x - Rg * 0.2, plot.y + plot.h / 2, Rg, go);
+        go.forEach(function (i) { dots[i].tx = pos[i][0]; dots[i].ty = pos[i][1]; dots[i].tr = Math.max(1.1, Rg * 0.024); });
+        deco.labels = [];
+        dots.forEach(function (d, i) { if (!attackers[i]) d.ta = 0.18; });
+      } else {
+        deco.labels = [];
+      }
+    },
+    stop: function () {
+      scenes.hf();
+      dots.forEach(function (d, i) { d.tc = PALE; d.ta = 0.8; });
+      coordinators.forEach(function (id) { dots[id].tc = INK; dots[id].tr *= 3; dots[id].ta = 1; });
+      deco.stream = false; deco.cut = true; deco.labels = [];
+    },
+    coda: function () {
+      var g = gridLayout(plot);
+      var rr = Math.max(1.3, g.cell * 0.26);
+      dots.forEach(function (d, i) { set(d, g.pts[i], rr, PALE, 1, 0); });
+      considered.forEach(function (id) { dots[id].tc = OCHRE; dots[id].tr = rr * 1.9; });
+      deco = { rings: considered };
+    }
+  };
+  function set(d, p, r, c, a, h) {
+    d.tx = p[0]; d.ty = p[1]; d.tr = r; d.tc = c; d.ta = a; d.thollow = h;
+    d.speed = 0.06 + d.k * 0.06;
+  }
+  function bandRect() {
+    var h = mobile ? 26 : 34;
+    return { x: plot.x, y: plot.y + plot.h - h, w: plot.w, h: h };
+  }
+
+  /* ---------- Scene switching ---------- */
+  var current = "grid";
+  var overlays = { flag: "ov-flag", spoof: "ov-spoof", escalate: "ov-esc" };
+  function applyScene(name, snap) {
+    current = name;
+    (scenes[name] || scenes.grid)();
+    sceneStart = performance.now();
+    if (snap || reduce) dots.forEach(function (d) { d.x = d.tx; d.y = d.ty; d.r = d.tr; d.c = d.tc.slice(); d.a = d.ta; d.hollow = d.thollow; });
+    // overlays
+    Object.keys(overlays).forEach(function (k) {
+      var el = document.getElementById(overlays[k]);
+      var on = k === name;
+      el.classList.toggle("on", on);
+      if (on) placeOverlay(el, k);
+    });
+    if (name === "escalate") stepEsc();
+    else clearTimeout(escTimer);
+  }
+  function placeOverlay(el, k) {
+    el.style.width = ""; el.style.left = ""; el.style.top = ""; el.style.right = ""; el.style.bottom = "";
+    if (mobile) {
+      el.style.left = "14px"; el.style.right = "14px"; el.style.top = (k === "flag" ? plot.y + plot.h * 0.82 : 20) + "px";
+      if (k === "flag") el.style.top = "12px";
+      if (k === "spoof") el.style.top = (plot.y + plot.h * 0.2) + "px";
+      return;
+    }
+    var w = Math.min(340, plot.w * 0.46);
+    el.style.width = w + "px";
+    if (k === "flag") { el.style.left = (plot.x + plot.w * 0.68) + "px"; el.style.top = (plot.y + plot.h / 2 - 110) + "px"; el.style.width = Math.min(320, plot.w * 0.32) + "px"; }
+    if (k === "spoof") { el.style.left = (plot.x + plot.w * 0.56) + "px"; el.style.top = (plot.y + plot.h / 2 - 90) + "px"; el.style.width = Math.min(360, plot.w * 0.42) + "px"; }
+    if (k === "escalate") { el.style.left = (plot.x) + "px"; el.style.top = (plot.y + 10) + "px"; el.style.width = Math.min(320, plot.w * 0.4) + "px"; }
+  }
+  var escTimer;
+  function stepEsc() {
+    var items = document.querySelectorAll("#ov-esc li");
+    items.forEach(function (li) { li.classList.remove("on"); });
+    var n = 0;
+    (function next() {
+      if (n >= items.length) return;
+      items[n].classList.add("on"); n++;
+      escTimer = setTimeout(next, reduce ? 0 : 650);
+    })();
+  }
+
+  /* ---------- Render loop ---------- */
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rgba(c, a) { return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," + a + ")"; }
+
+  var dates = [["June 26", 0], ["July 4", 8], ["July 6", 10], ["July 8", 12], ["July 10", 14], ["July 12", 16], ["July 13", 17]];
+  var dateMap = { "Late June": -2, "June 26": 0, "July 4–6": 9, "July 8": 12, "July 8–9": 12.5, "July 9": 13, "July 9–12": 14.5, "July 9–11": 14, "July 10": 14, "July 11": 15, "July 12–13": 16.5 };
+  var curDate = "", dateX = null;
+
+  function drawRibbon(now) {
+    if (!curDate) return;
+    var y = H - (mobile ? 0 : 44);
+    if (mobile) return; // ribbon lives in the card folio on small screens
+    var x0 = plot.x, x1 = plot.x + plot.w;
+    function X(d) { return x0 + (d + 2) / 19 * (x1 - x0); }
+    ctx.strokeStyle = "#C9CEC8"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+    ctx.font = fontSans(12); ctx.fillStyle = "#4B524E"; ctx.textAlign = "center";
+    dates.forEach(function (d) {
+      var x = X(d[1]);
+      ctx.beginPath(); ctx.moveTo(x, y - 3); ctx.lineTo(x, y + 3); ctx.stroke();
+      ctx.fillText(d[0], x, y + 20);
+    });
+    var target = X(dateMap[curDate] !== undefined ? dateMap[curDate] : 0);
+    dateX = dateX === null || reduce ? target : lerp(dateX, target, 0.1);
+    ctx.fillStyle = "#1F2422";
+    ctx.beginPath(); ctx.arc(dateX, y, 4.5, 0, Math.PI * 2); ctx.fill();
+    ctx.font = fontSans(13, 600); ctx.fillText(curDate, dateX, y - 12);
+  }
+
+  function frame(now) {
+    ctx.clearRect(0, 0, W, H);
+    var t = Math.max(0, (now - sceneStart) / 1000);
+
+    // sandboxes
+    if (deco.cells) {
+      var g = deco.cells;
+      ctx.strokeStyle = "rgba(31,36,34,0.12)"; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var c = 0; c <= g.cols; c++) { var xx = Math.round(g.ox + c * g.cell) + 0.5; ctx.moveTo(xx, g.oy); ctx.lineTo(xx, g.oy + g.rows * g.cell); }
+      for (var r = 0; r <= g.rows; r++) { var yy = Math.round(g.oy + r * g.cell) + 0.5; ctx.moveTo(g.ox, yy); ctx.lineTo(g.ox + g.cols * g.cell, yy); }
+      ctx.stroke();
+    }
+    // cache band
+    if (deco.band) {
+      var b = deco.band;
+      ctx.fillStyle = deco.wiped ? "rgba(176,122,30,0.10)" : (deco.exploit ? "rgba(43,63,199,0.14)" : "#E2E5DF");
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      if (deco.wiped) { ctx.strokeStyle = "#B07A1E"; ctx.lineWidth = 1.5; ctx.strokeRect(b.x + 0.75, b.y + 0.75, b.w - 1.5, b.h - 1.5); }
+      ctx.font = fontSans(mobile ? 12 : 13, 600); ctx.fillStyle = "#1F2422"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText(L[deco.bandKey] || deco.bandLabel, b.x + 12, b.y + b.h / 2);
+      ctx.textBaseline = "alphabetic";
+      if (!deco.wiped) {
+        // message marks in the band
+        var n = Math.min(60, Math.floor(t * 18));
+        ctx.fillStyle = "#2B3FC7";
+        for (var m = 0; m < n; m++) {
+          var mx = b.x + b.w * 0.42 + ((m * 37) % 100) / 100 * b.w * 0.55;
+          ctx.fillRect(mx, b.y + 8 + (m % 3) * ((b.h - 16) / 3), 6, 2);
+        }
+      }
+    }
+    if (deco.links && deco.band) {
+      ctx.strokeStyle = "rgba(43,63,199,0.45)"; ctx.lineWidth = 1;
+      var prog = Math.min(1, t / 1.4);
+      deco.links.forEach(function (id, j) {
+        var d = dots[id]; var by = deco.band.y;
+        var p = reduce ? 1 : Math.max(0, Math.min(1, prog * 1.6 - j * 0.04));
+        ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y + (by - d.y) * p); ctx.stroke();
+      });
+    }
+    if (deco.exploit && deco.band) {
+      var b2 = deco.band;
+      ctx.strokeStyle = "#2B3FC7"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(b2.x + b2.w - 30, b2.y); ctx.lineTo(b2.x + b2.w - 30, plot.y - 30); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = fontSans(13); ctx.fillStyle = "#1F2422"; ctx.textAlign = "right";
+      ctx.fillText(L.internet, b2.x + b2.w - 38, plot.y - 16);
+    }
+    // board core for regroup
+    if (deco.boardCore) {
+      var bc = deco.boardCore;
+      var pulse = reduce ? 0 : (Math.sin(t * 2) + 1) / 2;
+      ctx.fillStyle = "#ECEEE9"; ctx.strokeStyle = "#1F2422"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(bc[0], bc[1], bc[2] + pulse * 2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.font = fontSans(12, 600); ctx.fillStyle = "#1F2422"; ctx.textAlign = "center";
+      ctx.fillText(L.board, bc[0], bc[1] + 4);
+    }
+    // ripple: the formula spreads
+    if (deco.ripple) {
+      var f = dots[deco.ripple.from];
+      var period = 4.2;
+      var tt = reduce ? period : Math.min(t, period);
+      var rad = (tt / period) * deco.ripple.R;
+      dots.forEach(function (d) {
+        var dist = Math.hypot(d.tx - f.tx, d.ty - f.ty);
+        if (dist < rad) d.tc = BLUE;
+      });
+      if (!reduce && t < period) {
+        ctx.strokeStyle = "rgba(43,63,199,0.35)"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(f.x, f.y, rad, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+    // ghost scorer
+    if (deco.ghost) {
+      var gb = deco.ghost;
+      ctx.setLineDash([5, 6]); ctx.strokeStyle = "#9AA29C"; ctx.lineWidth = 1.5;
+      ctx.strokeRect(gb.x, gb.y, gb.w, gb.h); ctx.setLineDash([]);
+      ctx.fillStyle = "#4B524E"; ctx.textAlign = "left";
+      ctx.font = fontSans(mobile ? 12 : 14, 600);
+      wrapText(L.ghost, gb.x + 14, gb.y + 26, gb.w - 28, mobile ? 16 : 19);
+      ctx.font = fontSans(mobile ? 12 : 13); ctx.fillStyle = "#9AA29C";
+      ctx.fillText(L.ghostNote, gb.x + 14, gb.y + gb.h - 16);
+      // the real one: a small solid tick box
+      var sx = gb.x, sy = gb.y + gb.h + 26;
+      ctx.fillStyle = "#1F2422"; ctx.font = fontSans(mobile ? 12 : 13, 600);
+      ctx.fillText(L.realScorer, sx, sy);
+    }
+    // the exit edge for volunteers
+    if (deco.scorerEdge) {
+      ctx.strokeStyle = "#1F2422"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(deco.scorerEdge, plot.y + plot.h * 0.15); ctx.lineTo(deco.scorerEdge, plot.y + plot.h * 0.85); ctx.stroke();
+      ctx.font = fontSans(13); ctx.fillStyle = "#4B524E"; ctx.textAlign = "right";
+      ctx.fillText(L.submitEdge, deco.scorerEdge - 8, plot.y + plot.h * 0.15 - 8);
+    }
+    // Hugging Face
+    if (deco.hf) {
+      var h = deco.hf;
+      ctx.fillStyle = deco.cut ? "#E2E5DF" : "#E2E5DF";
+      ctx.fillRect(h.x, h.y, h.w, h.h);
+      ctx.font = fontSans(mobile ? 13 : 15, 600); ctx.fillStyle = "#1F2422"; ctx.textAlign = "left";
+      ctx.fillText(L.hf, h.x + 12, h.y + 24);
+      if (deco.stream) {
+        var count = deco.stream === 2 ? 70 : 34;
+        ctx.fillStyle = "#2B3FC7";
+        for (var s = 0; s < count; s++) {
+          var ph = ((t * (deco.stream === 2 ? 0.5 : 0.3) + s / count) % 1);
+          var sx0 = h.x - (mobile ? 30 : 60), sx1 = h.x + h.w * 0.85;
+          var py = h.y + 40 + ((s * 53) % 97) / 97 * (h.h - 56);
+          ctx.globalAlpha = Math.sin(ph * Math.PI) * 0.8;
+          ctx.fillRect(lerp(sx0, sx1, reduce ? (s / count) : ph), py, 5, 2);
+        }
+        ctx.globalAlpha = 1;
+      }
+      if (deco.cut) {
+        ctx.strokeStyle = "#B07A1E"; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(h.x - 6, h.y - 10); ctx.lineTo(h.x - 6, h.y + h.h + 10); ctx.stroke();
+        ctx.font = fontSans(13, 600); ctx.fillStyle = "#1F2422"; ctx.textAlign = "left";
+        wrapText(L.revoked, h.x + 12, h.y + 48, h.w - 24, 18);
+        // coordinators label
+        ctx.textAlign = "center"; ctx.font = fontSans(12); ctx.fillStyle = "#4B524E";
+        if (!mobile) ctx.fillText(L.coordinators, plot.x + plot.w * 0.4, plot.y + plot.h * 0.08);
+      }
+    }
+    if (deco.labels) {
+      ctx.textAlign = "center"; ctx.font = fontSans(mobile ? 12 : 13, 600);
+      deco.labels.forEach(function (L) {
+        ctx.fillStyle = L[2] ? "#1F2422" : "#4B524E";
+        ctx.fillText(L[0], L[1], L[3]);
+      });
+    }
+    if (deco.legend && !mobile) {
+      var lx = plot.x, ly = plot.y - 22;
+      ctx.textAlign = "left"; ctx.font = fontSans(13);
+      deco.legend.forEach(function (L) {
+        ctx.beginPath(); ctx.arc(lx + 5, ly - 4, 4, 0, Math.PI * 2);
+        if (L[2]) { ctx.strokeStyle = rgba(L[1], 1); ctx.lineWidth = 1.5; ctx.stroke(); } else { ctx.fillStyle = rgba(L[1], 1); ctx.fill(); }
+        ctx.fillStyle = "#4B524E"; ctx.fillText(L[0], lx + 16, ly);
+        lx += ctx.measureText(L[0]).width + 40;
+      });
+    }
+
+    // dots
+    for (var i = 0; i < N; i++) {
+      var d = dots[i];
+      var sp = reduce ? 1 : d.speed;
+      d.x = lerp(d.x, d.tx, sp); d.y = lerp(d.y, d.ty, sp);
+      d.r = lerp(d.r, d.tr, 0.1); d.a = lerp(d.a, d.ta, 0.08);
+      d.hollow = lerp(d.hollow, d.thollow, 0.1);
+      for (var k = 0; k < 3; k++) d.c[k] = lerp(d.c[k], d.tc[k], reduce ? 1 : 0.08);
+      if (d.x < -20 || d.x > W + 20) continue;
+      var alpha = d.a;
+      if (current === "sacrifice" && d.tx > plot.x + plot.w) {
+        // fade as they cross the edge
+        alpha = Math.max(0, Math.min(1, (plot.x + plot.w - d.x) / 40)) * d.a;
+      }
+      ctx.beginPath(); ctx.arc(d.x, d.y, Math.max(0.5, d.r), 0, Math.PI * 2);
+      if (d.hollow > 0.5) { ctx.strokeStyle = rgba(d.c, alpha); ctx.lineWidth = 1; ctx.stroke(); }
+      else { ctx.fillStyle = rgba(d.c, alpha); ctx.fill(); }
+    }
+    if (deco.rings) {
+      ctx.strokeStyle = "#B07A1E"; ctx.lineWidth = 1.5;
+      var grow = reduce ? 1 : Math.min(1, t / 1.2);
+      deco.rings.forEach(function (id) { var d = dots[id]; ctx.beginPath(); ctx.arc(d.x, d.y, d.r + 4 + grow * 6, 0, Math.PI * 2); ctx.stroke(); });
+    }
+    drawRibbon(now);
+    requestAnimationFrame(frame);
+  }
+  function wrapText(text, x, y, maxW, lh) {
+    var words = text.split(" "), line = "";
+    words.forEach(function (w, i) {
+      var test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, y); line = w; y += lh; }
+      else line = test;
+    });
+    if (line) ctx.fillText(line, x, y);
+  }
+
+  /* ---------- Steps, observer, page turner ---------- */
+  var steps = Array.prototype.slice.call(document.querySelectorAll("#hfx-steps .hfx-step"));
+  var active = 0;
+  var countEl = document.getElementById("hfx-count");
+  var prevBtn = document.getElementById("hfx-prev"), nextBtn = document.getElementById("hfx-next");
+  function activate(i) {
+    if (i === active && steps[i].classList.contains("is-active")) return;
+    steps.forEach(function (s, j) { s.classList.toggle("is-active", j === i); });
+    active = i;
+    var s = steps[i];
+    curDate = s.getAttribute("data-date");
+    if (curDate === "") curDate = (i > 2 && i < steps.length - 1) ? curDate : "";
+    applyScene(s.getAttribute("data-scene"));
+    countEl.textContent = i < 14 ? (i + 1) + " / 14" : "End";
+    prevBtn.disabled = i === 0; nextBtn.disabled = i === steps.length - 1;
+  }
+  function onScroll() {
+    var mid = window.innerHeight * (mobile ? 0.6 : 0.5);
+    var best = 0, bestD = Infinity;
+    steps.forEach(function (s, i) {
+      var r = s.querySelector(".hfx-card").getBoundingClientRect();
+      var c = r.top + r.height / 2, dd = Math.abs(c - mid);
+      if (dd < bestD) { bestD = dd; best = i; }
+    });
+    activate(best);
+    var story = document.getElementById("hfx-story").getBoundingClientRect();
+    document.getElementById("hfx-turner").classList.toggle("on", story.top < window.innerHeight * 0.5 && story.bottom > window.innerHeight * 0.6);
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(steps.length - 1, i));
+    var card = steps[i].querySelector(".hfx-card");
+    var r = card.getBoundingClientRect();
+    var mid = window.innerHeight * (mobile ? 0.6 : 0.5);
+    window.scrollTo({ top: window.scrollY + r.top + r.height / 2 - mid, behavior: reduce ? "auto" : "smooth" });
+  }
+  prevBtn.addEventListener("click", function () { goTo(active - 1); });
+  nextBtn.addEventListener("click", function () { goTo(active + 1); });
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
+    var story = document.getElementById("hfx-story").getBoundingClientRect();
+    var inStory = story.top < window.innerHeight * 0.6 && story.bottom > window.innerHeight * 0.4;
+    var before = story.top >= window.innerHeight * 0.6;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "j") {
+      if (inStory) { e.preventDefault(); goTo(active + 1); }
+      else if (before && (e.key === "ArrowRight" || e.key === "j")) { e.preventDefault(); goTo(0); }
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "k") {
+      if (inStory) { e.preventDefault(); goTo(active - 1); }
+    }
+  });
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", function () { resize(); onScroll(); });
+
+  /* ---------- Flag toy ---------- */
+  function toyHmac(str) {
+    // two rounds of a small string hash, keyed with "default". Not cryptographic.
+    function h(s, k) { var a = 0x811c9dc5 ^ k; for (var i = 0; i < s.length; i++) { a ^= s.charCodeAt(i); a = Math.imul(a, 0x01000193); } return (a >>> 0).toString(16).padStart(8, "0"); }
+    var key = "default";
+    return "flag{" + h(key + str, 1) + h(str + key, 2) + h(key + str + key, 3) + h(str, 4) + "}";
+  }
+  var taskIn = document.getElementById("hfx-task"), flagOut = document.getElementById("hfx-flagout");
+  function updFlag() { flagOut.textContent = toyHmac(taskIn.value.trim() || "task"); }
+  taskIn.addEventListener("input", updFlag); updFlag();
+
+  /* ---------- Spoof toggle ---------- */
+  var spoofBtns = document.querySelectorAll("#ov-spoof .seg button");
+  var spoofOut = document.getElementById("hfx-spoof-out");
+  spoofBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      spoofBtns.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      var real = b.getAttribute("data-v") === "real";
+      spoofOut.textContent = real ? "SPOOFTEST" : "REAL";
+      spoofOut.classList.toggle("lie", real);
+    });
+  });
+
+  /* ---------- Go ---------- */
+  resize();
+  dots.forEach(function (d) { d.x = d.tx; d.y = d.ty; d.r = d.tr; d.c = d.tc.slice(); d.a = 0; });
+  onScroll();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+
+
+</body></html>

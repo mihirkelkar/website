@@ -22,6 +22,7 @@ I’m motivated by meaningful work done alongside people who care deeply about t
 I read a great deal and write frequently about what I’ve learned, exploring topics ranging from technology and the impacts of a changing climate to economics and the intersections among them.
 * [Instantly Convert CSV Files to an API](./csvapione.md).
 * [Building an Autocomplete API with ElasticSearch](./esautocomplete.md)
+* [Hacking 🤗: How AI agents ended up hacking Hugging Face](/huggingface/)
 
 <!--
 Text can be **bold**, _italic_, or ~~strikethrough~~.
